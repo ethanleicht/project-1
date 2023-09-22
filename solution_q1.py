@@ -1,80 +1,120 @@
+import random
+from collections import deque
+
+
+
 def read(filepath):
-    with open(filepath,'r') as file:    
+    with open(filepath,'r') as file:
         for line in file:
-            lst = line.strip().split(',')
-    lst = [0 if i=='_' else int(i) for i in lst]
-    return lst
+            initial_str = line.strip().split(',')
+    initial_lst = [0 if i=='_' else int(i) for i in initial_str]
+    return initial_lst
 
 
 
-def main():
-    init = read('input.txt')
-    goal=[0,1,2,3,4,5,6,7,8]
-    dfs(init, goal)
+# Function to print the current state of the puzzle as a string
+def print_puzzle(state):
+    state_str = ",".join(map(str, state)).replace("0", "_")
+    print(state_str)
 
+
+
+def find_possible_moves(state, empty_index):
+    possible_moves = []
+
+    # Define the possible moves (up, down, left, right)
+    if empty_index >= 3:
+        possible_moves.append(empty_index - 3)
+    if empty_index < 6:
+        possible_moves.append(empty_index + 3)
+    if empty_index % 3 != 0:
+        possible_moves.append(empty_index - 1)
+    if empty_index % 3 != 2:
+        possible_moves.append(empty_index + 1)
     
-    # Using a Python dictionary to act as an adjacency list
-    graph = {
-        0 : [1,3],
-        1 : [0,2,4],
-        2 : [1,5],
-        3 : [0,4,6],
-        4 : [1,3,5,7],
-        5 : [2,4,8],
-        6 : [3,7],
-        7 : [4,6,8],
-        8 : [5,7]
-    }
-    #dfs(graph, pos)
+    return possible_moves
 
 
 
-def dfs(state, goal, prev=None):
-    if state == goal:
-        print('The solution of Q1.1 is:')    
-    else:     
-        print(state)
-        pos = state.index(0)
-        if pos not in [0,3,6] and prev != 'r':
-            dfs(left(state.copy(), pos), goal, 'l')
-        elif pos not in [2,5,8] and prev != 'l':
-            dfs(right(state.copy(), pos), 'r')
-        elif pos not in [0,1,2] and prev != 'd':
-            dfs(up(state.copy(), pos), 'u')
-        elif prev != 'u':
-            dfs(down(state.copy(), pos), 'd')
+# Function to solve the 8-puzzle using random moves
+def dfs(initial, goal):
+    print("DFS path to solution:")
 
+    state = initial
+    moves = 0
 
-def online_dfs(graph, node, visited=set()):
-    if node not in visited:
-        print (node)
-        visited.add(node)
-        for neighbour in graph[node]:
-            online_dfs(graph, neighbour, visited)
+    while state != goal:
+        print_puzzle(state)
+
+        empty_index = state.index(0)
+        possible_moves = find_possible_moves(state, empty_index)
+        move = random.choice(possible_moves)
+        state[state.index(0)], state[move] = state[move], state[state.index(0)]
+        moves += 1
+
+    # Print goal state
+    print_puzzle(state)
 
 
 
-def left(state, pos):
-    state[pos]=state[pos-1]
-    state[pos-1]=0
-    return state
+# Define the BFS function to solve the puzzle
+def bfs(initial, goal):
+    print("BFS path to solution:")
 
-def right(state, pos):
-    state[pos]=state[pos+1]
-    state[pos+1]=0
-    return state
+    queue = deque([initial])
+    visited = set()
 
-def up(state, pos):
-    state[pos]=state[pos-3]
-    state[pos-3]=0
-    return state
+    while queue:
+        state = queue.popleft()
+        print_puzzle(state)
+        
+        if state == goal:
+            break
 
-def down(state, pos):
-    state[pos]=state[pos+3]
-    state[pos+3]=0
-    return state
+        empty_index = state.index(0)
+        possible_moves = find_possible_moves(state, empty_index)
+
+        for move in possible_moves:
+            new_state = state.copy()
+            new_state[empty_index], new_state[move] = new_state[move], new_state[empty_index]
+
+            if tuple(new_state) not in visited:
+                visited.add(tuple(new_state))
+                queue.append(new_state)
+
+
+
+def ucs(initial, goal):
+    pass
+
+
+
+def a_star(initial, goal):
+    pass
 
 
 
 if __name__ == "__main__":
-    main()
+    # Input initial state as a list (e.g., [1, 2, 3, 4, 0, 5, 7, 8, 6])
+    initial = read('input.txt')
+    
+    # Define the goal state
+    goal = [0, 1, 2, 3, 4, 5, 6, 7, 8]  # 0 represents the empty tile
+
+    print("The solution of Q1.1 is:")
+    print()
+    
+    #dfs(initial, goal)
+    #print()
+    
+    bfs(initial, goal)
+    print()
+
+    ucs(initial, goal)
+    print()
+
+    a_star(initial, goal)
+    print()
+
+
+
