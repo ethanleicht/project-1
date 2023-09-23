@@ -1,5 +1,36 @@
 import random
+from collections import deque
 
+def read(filepath):
+    with open(filepath,'r') as file:
+        for line in file:
+            initial_str = line.strip().split(',')
+    initial_lst = [0 if i=='_' else int(i) for i in initial_str]
+    return initial_lst
+
+
+
+# Function to print the current state of the puzzle as a string
+def print_puzzle(state):
+    state_str = ",".join(map(str, state)).replace("0", "_")
+    print(state_str)
+
+
+
+def find_possible_moves(state, empty_index):
+    possible_moves = []
+
+    # Define the possible moves (up, down, left, right)
+    if empty_index >= 3:
+        possible_moves.append(empty_index - 3)
+    if empty_index < 6:
+        possible_moves.append(empty_index + 3)
+    if empty_index % 3 != 0:
+        possible_moves.append(empty_index - 1)
+    if empty_index % 3 != 2:
+        possible_moves.append(empty_index + 1)
+    
+    return possible_moves
 
 # Function to check if the current state satisfies the new goal test
 def is_goal_state(state):
@@ -7,7 +38,7 @@ def is_goal_state(state):
     return top_row_sum == 11
 
 # Function to solve the 8-puzzle using depth-first search
-def dfs(initial, goal):
+def dfs(initial):
     print("DFS path to solution:")
 
     state = initial
@@ -25,4 +56,26 @@ def dfs(initial, goal):
     # Print goal state
     print_puzzle(state)
 
-# ... (rest of the code)
+if __name__ == "__main__":
+    # Input initial state as a list (e.g., [1, 2, 3, 4, 0, 5, 7, 8, 6])
+    #initial = read('input.txt')
+    initial = [1, 2, 3, 4, 0, 5, 7, 8, 6]
+    
+    
+    # Define the goal state
+    #goal = [0, 1, 2, 3, 4, 5, 6, 7, 8]  # 0 represents the empty tile
+
+    print("The solution of Q1.1 is:")
+    print()
+    
+    dfs(initial)
+    print()
+    
+    #bfs(initial, goal)
+    #print()
+
+    #ucs(initial, goal)
+    #print()
+
+    #a_star(initial, goal)
+    #print()
