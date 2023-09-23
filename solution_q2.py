@@ -56,6 +56,34 @@ def dfs(initial):
     # Print goal state
     print_puzzle(state)
 
+
+def bfs(initial):
+    print("BFS path to solution:")
+
+    queue = deque([(initial, [])])  # Each element in the queue is a tuple (state, path)
+    visited = set()
+
+    while queue:
+        state, path = queue.popleft()
+        print_puzzle(state)
+
+        if is_goal_state(state):
+            print("Goal state reached.")
+            print("Path to the goal state:", path)
+            break
+
+        empty_index = state.index(0)
+        possible_moves = find_possible_moves(state, empty_index)
+
+        for move in possible_moves:
+            new_state = state.copy()
+            new_state[empty_index], new_state[move] = new_state[move], new_state[empty_index]
+
+            if tuple(new_state) not in visited:
+                visited.add(tuple(new_state))
+                new_path = path + [new_state]
+                queue.append((new_state, new_path))
+
 if __name__ == "__main__":
     # Input initial state as a list (e.g., [1, 2, 3, 4, 0, 5, 7, 8, 6])
     #initial = read('input.txt')
@@ -71,8 +99,8 @@ if __name__ == "__main__":
     dfs(initial)
     print()
     
-    #bfs(initial, goal)
-    #print()
+    bfs(initial)
+    print()
 
     #ucs(initial, goal)
     #print()
