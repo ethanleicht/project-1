@@ -1,4 +1,5 @@
 import random
+import heapq
 from collections import deque
 
 def read(filepath):
@@ -8,14 +9,10 @@ def read(filepath):
     initial_lst = [0 if i=='_' else int(i) for i in initial_str]
     return initial_lst
 
-
-
 # Function to print the current state of the puzzle as a string
 def print_puzzle(state):
     state_str = ",".join(map(str, state)).replace("0", "_")
     print(state_str)
-
-
 
 def find_possible_moves(state, empty_index):
     possible_moves = []
@@ -41,10 +38,10 @@ def is_goal_state(state):
 def dfs(initial):
     print("DFS path to solution:")
 
-    state = initial
+    state = initial[:]
     moves = 0
 
-    while not is_goal_state(state):
+    while not is_goal_state(state):  # Check the new goal test
         print_puzzle(state)
 
         empty_index = state.index(0)
@@ -59,41 +56,73 @@ def dfs(initial):
 
 def bfs(initial):
     print("BFS path to solution:")
-
-    queue = deque([(initial, [])])  # Each element in the queue is a tuple (state, path)
+    state = initial
     visited = set()
+    queue = deque([(state, [])])
 
     while queue:
         state, path = queue.popleft()
-        print_puzzle(state)
+        visited.add(tuple(state))
+
+        print_puzzle(state)  # Print the current state
 
         if is_goal_state(state):
-            print("Goal state reached.")
-            print("Path to the goal state:", path)
-            break
+            print("Solution found!")
+            print("Path to solution:")
+            for step in path:
+                print_puzzle(step)
+            return
 
         empty_index = state.index(0)
         possible_moves = find_possible_moves(state, empty_index)
 
         for move in possible_moves:
-            new_state = state.copy()
+            new_state = state[:]
             new_state[empty_index], new_state[move] = new_state[move], new_state[empty_index]
-
             if tuple(new_state) not in visited:
-                visited.add(tuple(new_state))
-                new_path = path + [new_state]
-                queue.append((new_state, new_path))
+                queue.append((new_state, path + [new_state]))
+
+    print("No solution found!")
+
+
+def ucs(initial):
+    print("UCS path to solution:")
+    state = initial
+    visited = set()
+    priority_queue = [(0, state, [])]
+
+    while priority_queue:
+        cost, state, path = heapq.heappop(priority_queue)
+        if tuple(state) in visited:
+            continue
+
+        print_puzzle(state)  # Print the current state
+
+        if is_goal_state(state):
+            print("Solution found!")
+            print("Path to solution:")
+            for step in path:
+                print_puzzle(step)
+            return
+
+        visited.add(tuple(state))
+
+        empty_index = state.index(0)
+        possible_moves = find_possible_moves(state, empty_index)
+
+        for move in possible_moves:
+            new_state = state[:]
+            new_state[empty_index], new_state[move] = new_state[move], new_state[empty_index]
+            heapq.heappush(priority_queue, (cost + 1, new_state, path + [new_state]))
+
+    print("No solution found!")
 
 if __name__ == "__main__":
     # Input initial state as a list (e.g., [1, 2, 3, 4, 0, 5, 7, 8, 6])
     #initial = read('input.txt')
-    initial = [1, 2, 3, 4, 0, 5, 7, 8, 6]
-    
-    
-    # Define the goal state
-    #goal = [0, 1, 2, 3, 4, 5, 6, 7, 8]  # 0 represents the empty tile
+    initial = [1, 3, 2, 4, 0, 5, 7, 8, 6]
 
-    print("The solution of Q1.1 is:")
+    print("The solution of Q2.1 is:")
     print()
     
     dfs(initial)
@@ -102,8 +131,7 @@ if __name__ == "__main__":
     bfs(initial)
     print()
 
-    #ucs(initial, goal)
-    #print()
+    ucs(initial)
+    print()
 
-    #a_star(initial, goal)
-    #print()
+    
