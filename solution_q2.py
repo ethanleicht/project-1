@@ -2,6 +2,8 @@ import math
 import heapq
 from collections import deque
 
+
+# Function to read input file
 def read(filepath):
     with open(filepath,'r') as file:
         for line in file:
@@ -39,6 +41,8 @@ def manhattan_distance(state):
             total_distance += abs(target_row - current_row) + abs(target_col - current_col)
     return total_distance
 
+
+# Function to calculate the Manhattan distance heuristic
 def straight_line_distance(state):
     total_distance = 0
     for i in range(9):
@@ -53,6 +57,8 @@ def is_goal(state):
     top_row = state[:3]
     return sum(num for num in top_row if num is not None) == 11
 
+
+# Define the BFS function to solve the puzzle
 def bfs_modified(initial):
     queue = deque([(initial, [])])
     visited = set()
@@ -78,6 +84,7 @@ def bfs_modified(initial):
 
     return None, node_expansions
 
+# Define the DFS function to solve the puzzle
 def dfs_modified(initial):
     stack = [(initial, [])]
     visited = set()
@@ -103,13 +110,14 @@ def dfs_modified(initial):
 
     return None, node_expansions
 
+# Define the UCS function to solve the puzzle
 def ucs_modified(initial):
     heap = [(0, initial, [])]
     visited = set()
-    node_expansions = 0
+    node_expansions = 0 # Counter to track node expansions
 
     while heap:
-        cost, state, path = heapq.heappop(heap)
+        cost, state, path = heapq.heappop(heap) # Get the state with the lowest cost
         node_expansions += 1
 
         if is_goal(state):
@@ -124,17 +132,18 @@ def ucs_modified(initial):
             new_state = state[:]
             new_state[empty_index], new_state[move] = new_state[move], new_state[empty_index]
             if tuple(new_state) not in visited:
-                heapq.heappush(heap, (cost + 1, new_state, path + [str(state[move]) + dir]))
+                heapq.heappush(heap, (cost + 1, new_state, path + [str(state[move]) + dir])) # Add new state to the queue
 
     return None, node_expansions
 
+# Define the A* function to solve the puzzle
 def a_star_modified(initial, heuristic):
     heap = [(heuristic(initial), initial, [])]
     visited = set()
     node_expansions = 0
 
     while heap:
-        _, state, path = heapq.heappop(heap)
+        _, state, path = heapq.heappop(heap) # Get the state with the lowest cost + heuristic
         node_expansions += 1
 
         if is_goal(state):
