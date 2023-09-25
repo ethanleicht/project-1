@@ -41,24 +41,28 @@ def find_possible_moves(empty_index):
 
 # Function to solve the 8-puzzle using random moves
 def dfs(initial, goal):
-    state = initial
+    state = initial[:]
     path = ''
+    node_expansions = 0
 
     while state != goal:
         empty_index = state.index(0)
         possible_moves = find_possible_moves(empty_index)
+        node_expansions += len(possible_moves)
+
         move, dir = random.choice(possible_moves)
 
-        path.append(str(state[move]) + dir)
+        path += (str(state[move]) + dir + ',')
         state[empty_index], state[move] = state[move], state[empty_index]
 
-    return path
+    print(path[:-1])
+    print('Node expansions:', node_expansions)
 
 
 
 # Define the BFS function to solve the puzzle
 def bfs(initial, goal):
-    queue = [(initial, '')]
+    queue = [(initial[:], '')]
     visited = set()
     node_expansions = 0
 
@@ -87,7 +91,7 @@ def bfs(initial, goal):
 # Define the UCS function to solve the puzzle
 def ucs(initial, goal):
     visited = set()
-    queue = [(0, initial, '')]  # Priority queue with cost
+    queue = [(0, initial[:], '')]  # Priority queue with cost
     node_expansions = 0  # Counter to track node expansions
 
     while queue:
@@ -134,7 +138,7 @@ def straight_line_distance(state):
 
 def a_star(initial, goal, heuristic):
     visited = set()
-    queue = [(0 + heuristic(initial), initial, '')]  # Priority queue with cost and heuristic
+    queue = [(0 + heuristic(initial[:]), initial, '')]  # Priority queue with cost and heuristic
     node_expansions = 0  # Counter to track node expansions
 
     while queue:
@@ -168,9 +172,9 @@ if __name__ == '__main__':
     # Define the goal state
     goal = [0, 1, 2, 3, 4, 5, 6, 7, 8]  # 0 represents the empty tile
     
-    # print('The solution of Q1.1 (DFS) is:')
-    # dfs(initial, goal)
-    # print()
+    print('The solution of Q1.1 (DFS) is:')
+    dfs(initial, goal)
+    print()
     
     print('The solution of Q1.2 (BFS) is:')
     bfs(initial, goal)
