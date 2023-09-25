@@ -105,6 +105,7 @@ def ucs(initial, goal):
         if state == goal:
             print(path[:-1])
             print('Node expansions:', node_expansions)
+            break
 
         visited.add(tuple(state))
 
@@ -152,6 +153,7 @@ def a_star(initial, goal, heuristic):
         if state == goal:
             print(path[:-1])
             print('Node expansions:', node_expansions)
+            break
 
         visited.add(tuple(state))
 
