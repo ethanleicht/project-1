@@ -3,6 +3,7 @@ import heapq
 import math
 
 
+# Function to read input file
 def read(filepath):
     with open(filepath,'r') as file:
         for line in file:
@@ -39,7 +40,7 @@ def find_possible_moves(empty_index):
 
 
 
-# Function to solve the 8-puzzle using random moves
+# Define the DFS function to solve the puzzle
 def dfs(initial, goal):
     state = initial[:]
     path = ''
@@ -97,7 +98,6 @@ def ucs(initial, goal):
     while queue:
         cost, state, path = heapq.heappop(queue)  # Get the state with the lowest cost
 
-        # Increment the node expansions count for each possible move
         empty_index = state.index(0)
         possible_moves = find_possible_moves(empty_index)
         node_expansions += len(possible_moves)
@@ -127,6 +127,7 @@ def manhattan_distance(state):
             total_distance += abs(target_row - current_row) + abs(target_col - current_col)
     return total_distance
 
+# Function to calculate the straight line distance heuristic
 def straight_line_distance(state):
     total_distance = 0
     for i in range(9):
@@ -137,6 +138,9 @@ def straight_line_distance(state):
             total_distance += distance
     return total_distance
 
+
+
+# Define the A* function to solve the puzzle
 def a_star(initial, goal, heuristic):
     visited = set()
     queue = [(0 + heuristic(initial[:]), initial, '')]  # Priority queue with cost and heuristic
@@ -145,7 +149,6 @@ def a_star(initial, goal, heuristic):
     while queue:
         cost, state, path = heapq.heappop(queue)  # Get the state with the lowest cost + heuristic
 
-        # Increment the node expansions count for each possible move
         empty_index = state.index(0)
         possible_moves = find_possible_moves(empty_index)
         node_expansions += len(possible_moves)
