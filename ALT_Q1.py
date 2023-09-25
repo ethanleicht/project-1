@@ -202,10 +202,6 @@ if __name__ == "__main__":
         print("DFS Solution found:")
         dfs_actions_taken = [node.action for node in dfs_solution_path[1:]]  # Exclude the initial state
         print("Actions taken for the empty tile (DFS):", ", ".join(dfs_actions_taken))
-        for step, node in enumerate(dfs_solution_path):
-            print(f"Step {step}:")
-            print(node.state)
-            print()
         print("Nodes expanded (DFS):", dfs_nodes_expanded)  # Print the nodes expanded count
     else:
         print("DFS: No solution found.")
@@ -215,10 +211,6 @@ if __name__ == "__main__":
         print("\nBFS Solution found:")
         bfs_actions_taken = [node.action for node in bfs_solution_path[1:]]  # Exclude the initial state
         print("Actions taken for the empty tile (BFS):", ", ".join(bfs_actions_taken))
-        for step, node in enumerate(bfs_solution_path):
-            print(f"Step {step}:")
-            print(node.state)
-            print()
         print("Nodes expanded (BFS):", bfs_nodes_expanded)  # Print the nodes expanded count
     else:
         print("BFS: No solution found.")
@@ -229,10 +221,6 @@ if __name__ == "__main__":
         print("UCS Solution found:")
         ucs_actions_taken = [node.action for node in ucs_solution_path[1:]]  # Exclude the initial state
         print("Actions taken for the empty tile (UCS):", ", ".join(ucs_actions_taken))
-        for step, node in enumerate(ucs_solution_path):
-            print(f"Step {step}:")
-            print(node.state)
-            print()
         print("Nodes expanded (UCS):", ucs_nodes_expanded)  # Print the nodes expanded count
     else:
         print("UCS: No solution found.")
@@ -243,11 +231,6 @@ if __name__ == "__main__":
         print("\nA* Solution found (Manhattan Heuristic):")
         astar_manhattan_actions_taken = [node.action for node in astar_manhattan_solution_path[1:]]  # Exclude the initial state
         print("Actions taken for the empty tile (A* - Manhattan):", ", ".join(astar_manhattan_actions_taken))
-        for step, node in enumerate(astar_manhattan_solution_path):
-            print(f"Step {step}:")
-            print(node.state)
-            print("Manhattan Distance:", node.manhattan_distance())
-            print()
         print("Nodes expanded (A* - Manhattan):", astar_manhattan_nodes_expanded)  # Print the nodes expanded count
     else:
         print("A* - Manhattan: No solution found.")
@@ -258,11 +241,6 @@ if __name__ == "__main__":
         print("\nA* Solution found (Straight Line Heuristic):")
         astar_straight_line_actions_taken = [node.action for node in astar_straight_line_solution_path[1:]]  # Exclude the initial state
         print("Actions taken for the empty tile (A* - Straight Line):", ", ".join(astar_straight_line_actions_taken))
-        for step, node in enumerate(astar_straight_line_solution_path):
-            print(f"Step {step}:")
-            print(node.state)
-            print("Straight Line Distance:", node.straight_line_distance())
-            print()
         print("Nodes expanded (A* - Straight Line):", astar_straight_line_nodes_expanded)  # Print the nodes expanded count
     else:
         print("A* - Straight Line: No solution found.")
