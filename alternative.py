@@ -79,93 +79,111 @@ def apply_action(state, action):
 def dfs(initial_state):
     explored = set()
     stack = [PuzzleNode(initial_state)]
+    nodes_expanded = 0  # Initialize the nodes expanded count
+
     while stack:
         current_node = stack.pop()
+        nodes_expanded += 1  # Increment the nodes expanded count
         explored.add(tuple(current_node.state))
+
         if is_goal(current_node.state):
-            return build_path(current_node)
+            return build_path(current_node), nodes_expanded
+
         for action in actions(current_node.state):
             child_state = apply_action(current_node.state, action)
             if tuple(child_state) not in explored:
                 child_node = PuzzleNode(child_state, current_node, action, current_node.cost + 1)
                 stack.append(child_node)
-    return None
+    
+    return None, nodes_expanded  # Return None for solution path and nodes expanded count
 
 def bfs(initial_state):
     explored = set()
     queue = deque([PuzzleNode(initial_state)])
+    nodes_expanded = 0  # Initialize the nodes expanded count
+
     while queue:
         current_node = queue.popleft()
+        nodes_expanded += 1  # Increment the nodes expanded count
         explored.add(tuple(current_node.state))
+
         if is_goal(current_node.state):
-            return build_path(current_node)
+            return build_path(current_node), nodes_expanded
+
         for action in actions(current_node.state):
             child_state = apply_action(current_node.state, action)
             if tuple(child_state) not in explored:
                 child_node = PuzzleNode(child_state, current_node, action, current_node.cost + 1)
                 queue.append(child_node)
-    return None
-
 
 def ucs(initial_state):
     explored = set()
     priority_queue = [PuzzleNode(initial_state, None, None, 0)]
     heapq.heapify(priority_queue)
+    nodes_expanded = 0  # Initialize the nodes expanded count
     
     while priority_queue:
         current_node = heapq.heappop(priority_queue)
+        nodes_expanded += 1  # Increment the nodes expanded count
         explored.add(tuple(current_node.state))
         
         if is_goal(current_node.state):
-            return build_path(current_node)
-        
+            return build_path(current_node), nodes_expanded
+
         for action in actions(current_node.state):
             child_state = apply_action(current_node.state, action)
             if tuple(child_state) not in explored:
                 child_node = PuzzleNode(child_state, current_node, action, current_node.cost + 1)
                 heapq.heappush(priority_queue, child_node)
-
-
+    
+    return None, nodes_expanded
 
 def astar_manhattan(initial_state):
     explored = set()
     priority_queue = [PuzzleNode(initial_state, None, None, 0)]
     heapq.heapify(priority_queue)
+    nodes_expanded = 0  # Initialize the nodes expanded count
     
     while priority_queue:
         current_node = heapq.heappop(priority_queue)
+        nodes_expanded += 1  # Increment the nodes expanded count
         explored.add(tuple(current_node.state))
         
         if is_goal(current_node.state):
-            return build_path(current_node)
-        
+            return build_path(current_node), nodes_expanded
+
         for action in actions(current_node.state):
             child_state = apply_action(current_node.state, action)
             if tuple(child_state) not in explored:
                 child_node = PuzzleNode(child_state, current_node, action, current_node.cost + 1)
                 heapq.heappush(priority_queue, child_node)
     
-    return None
+    return None, nodes_expanded  # Return None for solution path and nodes expanded count
 
 def astar_straight_line(initial_state):
     explored = set()
     priority_queue = [PuzzleNode(initial_state, None, None, 0)]
     heapq.heapify(priority_queue)
+    nodes_expanded = 0  # Initialize the nodes expanded count
     
     while priority_queue:
         current_node = heapq.heappop(priority_queue)
+        nodes_expanded += 1  # Increment the nodes expanded count
         explored.add(tuple(current_node.state))
         
         if is_goal(current_node.state):
-            return build_path(current_node)
-        
+            return build_path(current_node), nodes_expanded
+
         for action in actions(current_node.state):
             child_state = apply_action(current_node.state, action)
             if tuple(child_state) not in explored:
                 child_node = PuzzleNode(child_state, current_node, action, current_node.cost + 1)
                 heapq.heappush(priority_queue, child_node)
     
-    return None
+    return None, nodes_expanded
+
+
+
 
 def build_path(node):
     path = []
@@ -175,11 +193,11 @@ def build_path(node):
     return list(reversed(path))
 
 if __name__ == "__main__":
-    # Initial state with '_'
+    # ... (previous code)
     initial_state = [1, 4, 2, 3, None, 5, 6, 7, 8]
 
     # Solve the puzzle using DFS
-    dfs_solution_path = dfs(initial_state)
+    dfs_solution_path, dfs_nodes_expanded = dfs(initial_state)
     if dfs_solution_path:
         print("DFS Solution found:")
         dfs_actions_taken = [node.action for node in dfs_solution_path[1:]]  # Exclude the initial state
@@ -188,11 +206,11 @@ if __name__ == "__main__":
             print(f"Step {step}:")
             print(node.state)
             print()
+        print("Nodes expanded (DFS):", dfs_nodes_expanded)  # Print the nodes expanded count
     else:
         print("DFS: No solution found.")
-
-    # Solve the puzzle using BFS
-    bfs_solution_path = bfs(initial_state)
+        
+    bfs_solution_path, bfs_nodes_expanded = bfs(initial_state)
     if bfs_solution_path:
         print("\nBFS Solution found:")
         bfs_actions_taken = [node.action for node in bfs_solution_path[1:]]  # Exclude the initial state
@@ -201,10 +219,12 @@ if __name__ == "__main__":
             print(f"Step {step}:")
             print(node.state)
             print()
+        print("Nodes expanded (BFS):", bfs_nodes_expanded)  # Print the nodes expanded count
     else:
         print("BFS: No solution found.")
-
-    ucs_solution_path = ucs(initial_state)
+        
+    # Solve the puzzle using UCS
+    ucs_solution_path, ucs_nodes_expanded = ucs(initial_state)
     if ucs_solution_path:
         print("UCS Solution found:")
         ucs_actions_taken = [node.action for node in ucs_solution_path[1:]]  # Exclude the initial state
@@ -213,11 +233,12 @@ if __name__ == "__main__":
             print(f"Step {step}:")
             print(node.state)
             print()
+        print("Nodes expanded (UCS):", ucs_nodes_expanded)  # Print the nodes expanded count
     else:
         print("UCS: No solution found.")
-    
+
     # Solve the puzzle using A* with Manhattan distance heuristic
-    astar_manhattan_solution_path = astar_manhattan(initial_state)
+    astar_manhattan_solution_path, astar_manhattan_nodes_expanded = astar_manhattan(initial_state)
     if astar_manhattan_solution_path:
         print("\nA* Solution found (Manhattan Heuristic):")
         astar_manhattan_actions_taken = [node.action for node in astar_manhattan_solution_path[1:]]  # Exclude the initial state
@@ -227,11 +248,12 @@ if __name__ == "__main__":
             print(node.state)
             print("Manhattan Distance:", node.manhattan_distance())
             print()
+        print("Nodes expanded (A* - Manhattan):", astar_manhattan_nodes_expanded)  # Print the nodes expanded count
     else:
         print("A* - Manhattan: No solution found.")
     
     # Solve the puzzle using A* with Straight Line Distance heuristic
-    astar_straight_line_solution_path = astar_straight_line(initial_state)
+    astar_straight_line_solution_path, astar_straight_line_nodes_expanded = astar_straight_line(initial_state)
     if astar_straight_line_solution_path:
         print("\nA* Solution found (Straight Line Heuristic):")
         astar_straight_line_actions_taken = [node.action for node in astar_straight_line_solution_path[1:]]  # Exclude the initial state
@@ -241,6 +263,6 @@ if __name__ == "__main__":
             print(node.state)
             print("Straight Line Distance:", node.straight_line_distance())
             print()
+        print("Nodes expanded (A* - Straight Line):", astar_straight_line_nodes_expanded)  # Print the nodes expanded count
     else:
         print("A* - Straight Line: No solution found.")
-
